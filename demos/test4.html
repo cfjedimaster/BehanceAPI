@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+	<head>
+	<style>
+		.project {
+			background-color: rgba(7, 219, 64, 0.72);
+			width: 280px;
+			float: left;
+			margin: 0px 10px 10px 10px;
+		}
+	</style>
+	</head>
+	
+	<body>
+		
+		<h1>Projects for gwilson</h1>
+		<div id="projects">
+		
+		</div>
+
+        <br clear="left">
+        <hr/>
+        
+        <h1>Projects for bwizeman</h1>
+		<div id="projects2">
+		
+		</div>
+		
+		<script src="jquery-2.0.0.min.js"></script>
+		<script src="../lib/behance_api.js"></script>
+		<script>
+        /* global $,console,document,behanceAPI */
+        var behancekey = "replace";
+
+        $(document).ready(function() {
+
+            //Set my key
+            behanceAPI.setKey(behancekey);
+
+            //Now get my projects
+            behanceAPI.renderProjects("gwilson", "projects", "projectTemplate");
+            behanceAPI.renderProjects("bwizeman", "projects2", "projectTemplate");
+
+            //cache for projects
+            var projects = {};
+            $("body").on("mouseenter", "div.project", function(e) {
+                var pid = $(this).data("projectid");
+                var that = this;
+                if(projects[pid]) return;
+                behanceAPI.getProject(pid, function(p) {
+                    console.dir(p);
+                    projects[pid] = p;
+                    $(that).attr("title", p.description);
+                });
+                console.log(pid);
+            });
+
+        });
+        </script>
+		
+		<script id="projectTemplate" type="text/x-behance-template">
+		<div class="project" data-projectid="{{id}}">
+		<h2><a href="{{url}}">{{name}}</a></h2>
+		<i>Created: {{created}}</i><br/>
+		<i>Fields: {{fields}}</i><br/>
+		<i>Stats: Appreciations={{appreciations}}, Comments={{comments}}, Views={{views}}</i><br/>
+		<img src="{{covers_230}}">
+		</div>
+		</script>
+
+	</body>
+</html>
